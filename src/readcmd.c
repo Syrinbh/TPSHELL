@@ -10,14 +10,13 @@
 #include <string.h>
 #include "readcmd.h"
 
-
+//affiche l'erreur et quitte le programme
 static void memory_error(void)
 {
 	errno = ENOMEM;
 	perror(0);
 	exit(1);
 }
-
 
 static void *xmalloc(size_t size)
 {
@@ -149,7 +148,7 @@ static void freecmd(struct cmdline *s)
 	if (s->seq) freeseq(s->seq);
 }
 
-
+//la fonction principale de ce fichier
 struct cmdline *readcmd(void)
 {
 	static struct cmdline *static_cmdline = 0;

@@ -9,10 +9,10 @@
 #include "csapp.h"
 
 //function for the command "quitte" to exit the program
-//If the user typed the built-in command "quit", terminate shell 
+//If the user typed the built-in command "quit" ou "q", terminate shell 
 void quitteCommande(struct cmdline *l){
-	if (l->seq && l->seq[0] && l->seq[0][0] && strcmp(l->seq[0][0], "quit") == 0) {
-		printf("exit\n");
+	if (l->seq && l->seq[0] && l->seq[0][0] && (strcmp(l->seq[0][0], "quit") == 0 || strcmp(l->seq[0][0], "q") == 0)) {
+		printf("exit prog shell\n"); 
 		exit(0);
 	}
 }

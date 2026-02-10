@@ -22,7 +22,7 @@ int main()
 	while (1) {
 		struct cmdline *l;
 		int i, j;
-
+		
 		printf("shell> ");
 		l = readcmd();
 
@@ -53,6 +53,24 @@ int main()
 				printf("%s ", cmd[j]);
 			}
 			printf("\n");
+		}
+
+		if (l->seq[0] != NULL) {
+			pid_t pid = fork();
+
+			if (pid == -1) {
+				perror("fork");
+			} else if (pid == 0) { //child process
+				execvp(l->seq[0][0], l->seq[0]);
+				
+				/* if execvp fails */
+				fprintf(stderr, "%s: command not found\n", l->seq[0][0]);
+				exit(1);
+			} else {
+				/* father process (le shell) */
+				int status;
+				waitpid(pid, &status, 0); // On attend la fin de l'enfant
+			}
 		}
 	}
 }

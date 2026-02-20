@@ -11,6 +11,7 @@
 #include "readcmd.h"
 #include <errno.h>
 #include "csapp.h"
+#include <signal.h>
 
 //function for the command "quitte" to exit the program
 //If the user typed the built-in command "quit" ou "q", terminate shell 
@@ -21,8 +22,43 @@ void quitteCommande(struct cmdline *l){
 	}
 }
 
+pid_t background_pids[100];
+int background_count = 0;
+
+void sigchld_handler(int signum) {
+    int status;
+    pid_t pid;
+    while ((pid = waitpid(-1, &status, WNOHANG|WUNTRACED)) > 0) {
+        // Vérifier si c'était un processus background
+        for (int i = 0; i < background_count; i++) {
+            if (background_pids[i] == pid) {
+                printf("Processus en arrière-plan [%d] terminé\n", (int)pid);
+                // Décaler le tableau
+                for (int j = i; j < background_count - 1; j++) {
+                    background_pids[j] = background_pids[j + 1];
+                }
+                background_count--;
+                break;
+            }
+        }
+    }
+}
+
+
 int main()
 {
+	// Installer le handler pour SIGCHLD
+	struct sigaction sa;
+    sa.sa_handler = sigchld_handler;
+    sigemptyset(&sa.sa_mask);  
+    sa.sa_flags = SA_RESTART | SA_NOCLDSTOP;
+    if (sigaction(SIGCHLD, &sa, NULL) == -1) {
+        perror("sigaction SIGCHLD");
+        exit(1);
+    }
+    
+    background_count = 0;
+
 	while (1) {
 		struct cmdline *l;
 		int i, j;
@@ -129,9 +165,11 @@ int main()
 			// Père
 			if (!l->background) {
 				waitpid(pid, NULL, 0);  // Bloquant
-			} else {
-				printf("[%d] %d\n", (int)getpid(), (int)pid);  // Message job
+			} else {  // Parent background
+				printf("[%d] %d\n", background_count+1, (int)pid);
+				background_pids[background_count++] = pid;  
 			}
+
 		}
 
 		// Plusieurs commandes → pipes
@@ -224,7 +262,7 @@ int main()
 						wait(NULL);
 					}
 				} else {
-					printf("Job launched\n");
+					printf("[%d] Pipe Launched %d\n", background_count+1, (int)pid);
 				}
 			}
 		}		

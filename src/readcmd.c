@@ -109,6 +109,17 @@ static char **split_in_words(char *line)
 					c = 0;
 					break;
 				default: ;
+				case '&' : //etape 8 
+					if (s->background) {
+						s->err = "only one & supported";
+						goto error;
+					}
+					s->background = 1;  // ← Activer arrière-plan
+					break;	
+					default:
+						cmd = xrealloc(cmd, (cmd_len + 2) * sizeof(char *));
+						cmd[cmd_len++] = w;
+						cmd[cmd_len] = 0;
 				}
 			}
 			w = xmalloc((cur - start + 1) * sizeof(char));
@@ -188,6 +199,7 @@ struct cmdline *readcmd(void)
 	s->in = 0;
 	s->out = 0;
 	s->seq = 0;
+	s->background = 0; //etape 8 : par défaut, pas d'arrière-plan
 
 	i = 0;
 	while ((w = words[i++]) != 0) {
@@ -231,6 +243,13 @@ struct cmdline *readcmd(void)
 			cmd[0] = 0;
 			cmd_len = 0;
 			break;
+			case '&':  // etape 8 : gérer l'arrière-plan
+				if (s->background) {
+					s->err = "only one & supported";
+					goto error;
+				}
+				s->background = 1;
+				break;
 		default:
 			cmd = xrealloc(cmd, (cmd_len + 2) * sizeof(char *));
 			cmd[cmd_len++] = w;

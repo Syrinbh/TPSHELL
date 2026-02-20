@@ -60,12 +60,13 @@ int main()
 			printf("\n");
 		}
 
-		 // ÉTAPE 3 & 4 : Exécution de commande simple avec redirection
+		//etape 6 et 7 
+		int nb_cmd = 0;
+
+		// ÉTAPE 3 & 4 : Exécution de commande simple avec redirection
         if (l->seq[0] != NULL) {
 			
-			//etape 6 et 7 
 			//compter le nb de commandes (pour les pipes) 
-			int nb_cmd = 0;
 			while (l->seq[nb_cmd] != NULL) {
 				nb_cmd++;
 			}
@@ -124,13 +125,17 @@ int main()
 				}
 				exit(127); //127 : convention "command not found"
             }
-			//pere 
-			waitpid(pid, NULL, 0);
+			
+			// Père
+			if (!l->background) {
+				waitpid(pid, NULL, 0);  // Bloquant
+			} else {
+				printf("[%d] %d\n", (int)getpid(), (int)pid);  // Message job
+			}
 		}
 
 		// Plusieurs commandes → pipes
-		else {
-			if(nb_cmd > 1) {
+		else if(nb_cmd > 1) {
 				int pipefd[nb_cmd-1][2];  // N-1 pipes pour N commandes
 				int pipe_ok = 1; 
 					
@@ -149,7 +154,7 @@ int main()
 						close(pipefd[i][0]);
 						close(pipefd[i][1]);
 					}
-					continue;  // ← PROCHAINE COMMANDE
+					continue;
 				}
 				
 				// Pour chaque commande
@@ -183,7 +188,7 @@ int main()
 							close(fd);
 						}
 							
-							// Redirection SORTIE
+						// Redirection SORTIE
 						if (i < nb_cmd-1) {
 							// Cette commande écrit dans le pipe suivant
 							dup2(pipefd[i][1], STDOUT_FILENO);
@@ -212,11 +217,16 @@ int main()
 					close(pipefd[i][0]);
 					close(pipefd[i][1]);
 				}
-				for (int i = 0; i < nb_cmd; i++) {
-					wait(NULL); // Attendre tous les enfants					}
+				
+				//etape 8 : gérer l'arrière-plan
+				if (!l->background) {
+					for (int i = 0; i < nb_cmd; i++) {
+						wait(NULL);
+					}
+				} else {
+					printf("Job launched\n");
 				}
 			}
-		}
-	}
+		}		
 	}
 }

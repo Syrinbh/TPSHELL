@@ -109,17 +109,6 @@ static char **split_in_words(char *line)
 					c = 0;
 					break;
 				default: ;
-				case '&' : //etape 8 
-					if (s->background) {
-						s->err = "only one & supported";
-						goto error;
-					}
-					s->background = 1;  // ← Activer arrière-plan
-					break;	
-					default:
-						cmd = xrealloc(cmd, (cmd_len + 2) * sizeof(char *));
-						cmd[cmd_len++] = w;
-						cmd[cmd_len] = 0;
 				}
 			}
 			w = xmalloc((cur - start + 1) * sizeof(char));

@@ -1,0 +1,6 @@
+# trace01 - Commande simple
+# Test : exécution d'une commande basique (echo)
+
+echo hello world
+CLOSE
+WAIT

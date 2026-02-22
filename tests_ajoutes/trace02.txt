@@ -1,0 +1,8 @@
+# trace02.txt - Redirection de sortie
+# Test : écrire la sortie dans un fichier avec >
+# Le fichier /tmp/shell_test_out.txt doit être créé
+
+echo bonjour monde > /tmp/shell_test_out.txt
+cat /tmp/shell_test_out.txt
+CLOSE
+WAIT

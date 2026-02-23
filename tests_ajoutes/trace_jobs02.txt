@@ -1,0 +1,14 @@
+# trace_jobs02.txt - Stop puis bg
+# Attendu : job passe de Running à Stopped puis Running
+
+sleep 30 &
+SLEEP 1
+jobs
+stop %1
+SLEEP 1
+jobs
+bg %1
+SLEEP 1
+jobs
+CLOSE
+WAIT

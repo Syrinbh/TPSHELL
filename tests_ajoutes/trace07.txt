@@ -1,0 +1,6 @@
+# trace07.txt - Pipe chaîné avec 3 commandes
+# Test : cat | grep | wc doit compter les lignes correspondantes
+
+cat /etc/passwd | grep root | wc -l
+CLOSE
+WAIT

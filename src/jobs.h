@@ -3,70 +3,64 @@
 
 #include <sys/types.h>
 
-/* ── Paramètres ── */
-#define MAXJOBS  10       /* Taille maximale du tableau de jobs          */
-#define MAXCMD  256       /* Longueur max de la ligne de commande stockée */
+/* ── Quelques constantes utiles ── */
+#define MAXJOBS  10       /* On limite volontairement le nombre de jobs */
+#define MAXCMD  256       /* Taille max qu’on garde pour une commande   */
 
-/* ── États possibles d'un job ── */
+/* ── Les différents états possibles d’un job ── */
 typedef enum {
-    UNDEF   = 0,  /* Case libre / non initialisée                        */
-    RUNNING = 1,  /* En cours d'exécution (arrière-plan ou 1er plan)     */
-    STOPPED = 2,  /* Suspendu (SIGTSTP)                                  */
-    FG      = 3   /* En cours d'exécution au premier plan                */
+    UNDEF   = 0,  /* Case vide ou pas encore utilisée */
+    RUNNING = 1,  /* Le job tourne (en arrière-plan en général) */
+    STOPPED = 2,  /* Mis en pause (genre Ctrl+Z) */
+    FG      = 3   /* En train de s’exécuter au premier plan */
 } job_state;
 
-/* ── Structure représentant un job ── */
+/* ── Représentation d’un job ── */
 typedef struct {
-    int        jid;            /* Numéro de job (>0), 0 = case libre      */
-    pid_t      pid;            /* PID du processus leader du job          */
-    pid_t      pgid;           /* PGID du groupe de processus             */
-    job_state  state;          /* État courant du job                     */
-    char       cmd[MAXCMD];   /* Ligne de commande (pour affichage)       */
+    int        jid;          /* Identifiant interne du job (0 = libre) */
+    pid_t      pid;          /* PID du processus principal */
+    pid_t      pgid;         /* Groupe de processus associé */
+    job_state  state;        /* Où en est le job actuellement */
+    char       cmd[MAXCMD];  /* La commande telle qu’elle a été tapée */
 } job_t;
 
-/* ── Tableau global des jobs ── */
+/* ── Tableau global qui contient tous les jobs ── */
 extern job_t jobs[MAXJOBS];
 
-/* ════════════════════════════════════════════════
-   Fonctions d'accès au tableau des jobs
-   ════════════════════════════════════════════════ */
+/* Fonctions pour manipuler les jobs */
 
-/* Initialise toutes les cases du tableau (à appeler au démarrage) */
+/* À appeler au début : met toutes les cases à zéro */
 void init_jobs(void);
 
-/* Retourne l'index de la première case libre, ou -1 si le tableau est plein */
+/* Cherche une place libre dans le tableau (-1 si c’est plein) */
 int  first_free_slot(void);
 
-/* Ajoute un nouveau job ; retourne son jid (>0) ou -1 si tableau plein.
-   - pid   : PID du processus leader
-   - pgid  : PGID du groupe
-   - state : état initial (FG ou RUNNING)
-   - cmd   : texte de la commande */
+/* Ajoute un job dans le tableau
+   → retourne son jid si ça marche, sinon -1 */
 int  add_job(pid_t pid, pid_t pgid, job_state state, const char *cmd);
 
-/* Supprime le job identifié par son pid ; retourne 0 si OK, -1 si non trouvé */
+/* Supprime un job à partir de son pid */
 int  delete_job_by_pid(pid_t pid);
 
-/* Supprime le job identifié par son jid ; retourne 0 si OK, -1 si non trouvé */
+/* Supprime un job à partir de son jid */
 int  delete_job_by_jid(int jid);
 
-/* Retourne un pointeur vers le job de premier plan (état FG), ou NULL */
+/* Récupère le job actuellement au premier plan (ou NULL s’il n’y en a pas) */
 job_t *get_fg_job(void);
 
-/* Retourne un pointeur vers le job dont le pid correspond, ou NULL */
+/* Cherche un job avec son pid */
 job_t *get_job_by_pid(pid_t pid);
 
-/* Retourne un pointeur vers le job dont le jid correspond, ou NULL */
+/* Cherche un job avec son jid */
 job_t *get_job_by_jid(int jid);
 
-/* Retourne un pointeur vers le job désigné par une chaîne de type
-   "%3" (jid) ou "1234" (pid) ; NULL si non trouvé ou format invalide */
+/* Permet d’accepter soit "%3" (jid), soit "1234" (pid) */
 job_t *get_job_by_id_str(const char *id_str);
 
-/* Affiche la liste de tous les jobs actifs (commande intégrée "jobs") */
+/* Affiche tous les jobs (comme la commande jobs du shell) */
 void  list_jobs(void);
 
-/* Retourne une chaîne lisible de l'état d'un job */
+/* Convertit un état en texte lisible */
 const char *state_to_str(job_state s);
 
-#endif /* __JOBS_H__ */
+#endif

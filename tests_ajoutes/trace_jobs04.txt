@@ -1,0 +1,12 @@
+# trace_jobs04.txt - Stop puis fg
+# Attendu : job suspendu, puis ramené au premier plan et se termine
+
+sleep 5 &
+SLEEP 1
+stop %1
+SLEEP 1
+jobs
+fg %1
+jobs
+CLOSE
+WAIT

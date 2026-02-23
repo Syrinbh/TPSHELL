@@ -1,0 +1,10 @@
+# trace09.txt - Envoi de SIGINT au shell
+# Test : le shell ne doit pas mourir sur SIGINT
+
+sleep 10 &
+SLEEP 1
+INT
+SLEEP 1
+echo "shell toujours vivant"
+CLOSE
+WAIT

@@ -1,0 +1,9 @@
+# trace_jobs03.txt - Envoyer SIGTSTP au processus de premier plan
+# Attendu : le job passe en Stopped, puis jobs le liste
+
+sleep 30
+TSTP
+SLEEP 1
+jobs
+CLOSE
+WAIT

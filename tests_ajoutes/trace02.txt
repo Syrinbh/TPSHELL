@@ -1,8 +1,6 @@
-# trace02.txt - Redirection de sortie
-# Test : écrire la sortie dans un fichier avec >
-# Le fichier /tmp/shell_test_out.txt doit être créé
+# trace02.txt - Commande inconnue
+# Test : gestion d'une commande introuvable (doit afficher "command not found")
 
-echo bonjour monde > /tmp/shell_test_out.txt
-cat /tmp/shell_test_out.txt
+commandeinexistante
 CLOSE
 WAIT

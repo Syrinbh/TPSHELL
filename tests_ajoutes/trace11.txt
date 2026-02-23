@@ -1,0 +1,6 @@
+# trace11.txt - Fermeture de stdin (EOF)
+# Test : le shell doit afficher "exit" et se terminer proprement sur EOF
+
+echo "avant eof"
+CLOSE
+WAIT

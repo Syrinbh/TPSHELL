@@ -1,4 +1,4 @@
-# trace01 - Commande simple
+# trace01.txt - Commande simple
 # Test : exécution d'une commande basique (echo)
 
 echo hello world

@@ -1,7 +1,7 @@
-# trace04.txt - Pipe combiné avec redirection de sortie
-# Test : la sortie du pipe doit être redirigée vers un fichier
+# trace04.txt - Redirection d'entrée
+# Test : lire depuis un fichier avec <
+# Prérequis : le fichier /etc/hostname doit exister
 
-ls /usr/bin | grep zip > /tmp/zip_list.txt
-cat /tmp/zip_list.txt
+cat < /etc/hostname
 CLOSE
 WAIT

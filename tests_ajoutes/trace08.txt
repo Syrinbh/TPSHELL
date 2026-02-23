@@ -1,0 +1,8 @@
+# trace08.txt - Commande en arrière-plan avec &
+# Test : le shell doit afficher [n] pid et rendre la main immédiatement
+
+sleep 2 &
+echo "main continue"
+SLEEP 3
+CLOSE
+WAIT

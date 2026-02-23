@@ -1,0 +1,6 @@
+# trace06.txt - Pipe simple entre deux commandes
+# Test : ls | grep doit filtrer la sortie de ls
+
+ls /bin | grep cat
+CLOSE
+WAIT

@@ -1,9 +1,6 @@
 /*
  * Copyright (C) 2002, Simon Nieuviarts
- *
- * Shell avec gestion des jobs
- * globalement ça gère les process, fg/bg, signaux etc
- */
+*/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,7 +17,7 @@
 /* on bloque SIGCHLD pour éviter que jobs[] soit modifié en même temps */
 static void block_sigchld(sigset_t *prev) {
     sigset_t mask;
-    sigemptyset(&mask);
+    sigemptyset(&mask);&
     sigaddset(&mask, SIGCHLD);
     sigprocmask(SIG_BLOCK, &mask, prev);
 }

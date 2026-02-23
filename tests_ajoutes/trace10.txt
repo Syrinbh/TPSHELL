@@ -1,0 +1,7 @@
+# trace10.txt - Redirection depuis un fichier inexistant
+# Test : doit afficher "No such file or directory" et continuer
+
+cat < /tmp/fichier_qui_nexiste_pas_du_tout.txt
+echo "shell continue apres erreur"
+CLOSE
+WAIT

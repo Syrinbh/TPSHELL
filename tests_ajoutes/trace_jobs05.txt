@@ -1,0 +1,8 @@
+# trace_jobs05.txt - Désigner un job par son PID (pas par %jid)
+# Attendu : stop fonctionne aussi avec le PID directement
+
+sleep 30 &
+SLEEP 1
+jobs
+CLOSE
+WAIT

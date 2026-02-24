@@ -17,7 +17,7 @@
 /* on bloque SIGCHLD pour éviter que jobs[] soit modifié en même temps */
 static void block_sigchld(sigset_t *prev) {
     sigset_t mask;
-    sigemptyset(&mask);&
+    sigemptyset(&mask);
     sigaddset(&mask, SIGCHLD);
     sigprocmask(SIG_BLOCK, &mask, prev);
 }
